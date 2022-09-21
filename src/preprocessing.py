@@ -95,4 +95,27 @@ def create_features(data):
     return data
     
     
+def drop_outliers(df):
+    
+    df_cleaned = df.copy()
+    
+    # Remove the outliers in price
+    df_cleaned = df_cleaned[df_cleaned["price"] <= 0.4*10**10]
+
+    # remove the outliers in size_sqft
+    df_cleaned = df_cleaned[df_cleaned["size_sqft"] <= 60000]
+    dirty_size_sqft = df_cleaned[(df_cleaned["property_type"] == "terraced house") & (df_cleaned["size_sqft"] > 25000)]
+    df_cleaned = df_cleaned[~df_cleaned.index.isin(dirty_size_sqft.index)]
+
+    # remove data points with size_sfft == 0
+    df_cleaned = df_cleaned[df_cleaned["size_sqft"] != 0]
+
+    # remove outliers in tenure
+    dirty_tenure999_price = df_cleaned[(df_cleaned["tenure"] == "999-year leasehold") & (df_cleaned["price"] > 1*10**8)]
+    dirty_tenure99_price = df_cleaned[(df_cleaned["tenure"] == "99-year leasehold") & (df_cleaned["price"] > 0.6*10**8)]
+
+    df_cleaned = df_cleaned[~df_cleaned.index.isin(dirty_tenure999_price.index)]
+    df_cleaned = df_cleaned[~df_cleaned.index.isin(dirty_tenure99_price.index)]
+
+    return df_cleaned
     
