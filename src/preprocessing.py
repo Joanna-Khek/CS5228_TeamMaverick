@@ -45,6 +45,8 @@ def fill_missing_values(data):
     data["built_year"] = data["built_year"].fillna(data["subzone"].map(dict_built_year_subzone))
     data["built_year"] = data["built_year"].fillna(2022)
 
+    # total_num_units
+    data["total_num_units"] = data["total_num_units"].fillna(-1)
     return data
 
 def update_data(data):
@@ -65,24 +67,65 @@ def update_data(data):
 def drop_columns(data):
     # drop unimportant columns
     cols_drop = ["listing_id", "title", "address", "property_name", "available_unit_types", "property_details_url", 
-             "elevation", "subzone", "furnishing", "total_num_units", "floor_level"]
+             "elevation", "subzone", "floor_level"]
     data = data.drop(cols_drop, axis=1)
     
     return data
     
 def create_features(data):
+    
     # bin "tenure"
     data["tenure"] = np.where(data["tenure"].isin(["99-year leasehold", "freehold"]),
                               data["tenure"].str.title(),
                               "Others")
     
+    # create mean price for each tenure category
+    dict_tenure_prices = read_dataframe("dict_tenure_price.pkl")
+    data["mean_tenure_price"] = data["tenure"].map(dict_tenure_prices)
+    
     # create "active years" by subtracting built year from current year
     data["active_years"] = 2022 - data["built_year"]
     
-    # target encode planning area
+    # create "remaining lease" 
+    data["lease_year"] = data["tenure"].str.extract('([0-9]{2,3})', expand=False).str.strip()
+    data["lease_year"] = data["lease_year"].fillna("-1")
+    data["lease_year"] = data["lease_year"].astype(int)
+    data["end_lease"] = np.where(data["lease_year"]!=-1, data["built_year"] + data["lease_year"], data["lease_year"])
+    data["remaining_lease"] = np.where(data["lease_year"]!=-1, data["end_lease"] - 2022, data["lease_year"])
+
+    data = data.drop(["end_lease", "lease_year"], axis=1)
+    
     dict_target_encode = read_dataframe("dict_target_encode.pkl")
     data["planning_area_mean"] = data["planning_area"].map(dict_target_encode)
+    data["planning_area_mean"] = data["planning_area_mean"].fillna(-1)
     
+    # create "total_rooms" by summing up bedrooms and bathrooms
+    data["total_rooms"] = data["num_beds"] + data["num_baths"]
+    
+    # create "size_per_room"
+    data["size_per_room"] = data["size_sqft"]/data["total_rooms"]
+    
+    # create mean price for each property
+    dict_property_price = read_dataframe("dict_property_price.pkl")
+    data["mean_property_type"] = data["property_type"].map(dict_property_price)
+    
+    # calculate distance from nearest mrt
+    df_data_mrt_cross = read_dataframe("coord_min_dist_mrt.csv")
+    df_min_dist_mrt = df_data_mrt_cross.groupby(["lat_x", "lng_x"])["distance"].min().reset_index()
+    data["lat"] = data["lat"].astype(float)
+    data["lng"] = data["lng"].astype(float)
+    df_min_dist_mrt["distance"] = df_min_dist_mrt["distance"].astype(str)
+    df_min_dist_mrt["distance"] = df_min_dist_mrt["distance"].apply(lambda x: x.replace("km" ,""))
+    df_min_dist_mrt["distance"] = df_min_dist_mrt["distance"].astype(float)
+    data = data.merge(df_min_dist_mrt, left_on=["lat", "lng"], right_on=["lat_x", "lng_x"], how="left")
+    data = data.drop(["lat_x", "lng_x"],axis=1)
+    data["distance"] = data['distance'].fillna(-1)
+    
+    # number of shopping malls
+    dict_shopping_area = read_dataframe("dict_shopping_area.pkl")
+    data["num_shopping_malls"] = data["planning_area"].map(dict_shopping_area)
+    data["num_shopping_malls"] = data["num_shopping_malls"].fillna(-1)
+
     # one hot encode tenure and property type
     def encode_and_bind(original_dataframe, feature_to_encode):
         dummies = pd.get_dummies(original_dataframe[[feature_to_encode]])
@@ -91,6 +134,7 @@ def create_features(data):
 
     data = encode_and_bind(data, "tenure")
     data = encode_and_bind(data, "property_type")
+    data = encode_and_bind(data, "furnishing")
     
     return data
     
