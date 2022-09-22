@@ -4,24 +4,23 @@ Link to project plan [here](https://docs.google.com/spreadsheets/d/11c65nRfv9-kq
 
 # Task 1
 
-## Exploratory Data Analysis
+## 1. Exploratory Data Analysis
 Below are the insights gained from exploratory data analysis
-### 1. Target Variable
-### 2. Size Square Feet
-### 3. Built Year
-### 4. Tenure
-### 5. Number of bedrooms
-### 6. Number of bathrooms
-### 7. Property type
-### 8. Latitude and Longitude
-### 10. Planning Area
-### 11. Furnishings
-### 12. Total number of units
-###
+#### Target Variable
+#### Size Square Feet
+#### Built Year
+#### Tenure
+#### Number of bedrooms
+#### Number of bathrooms
+#### Property type
+#### Latitude and Longitude
+#### Planning Area
+#### Furnishings
+#### Total number of units
 
-## Dealing with missing values
+## 2. Dealing with missing values
 
-## Preprocessing
+## 3. Preprocessing
 ### Transformation
 - **Tenure:** Binned into "99-year leasehold", "freehold" and "others".
 - 
