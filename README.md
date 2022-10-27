@@ -1,43 +1,19 @@
 # CS5228 Project
 
 Link to project plan [here](https://docs.google.com/spreadsheets/d/11c65nRfv9-kqoD8SUnnphL5oPNgihyhzmBO6jFLDbSY/edit#gid=0)    
-Link to progress report [here](https://docs.google.com/presentation/d/1H8_7V6NpIQwINXYNRxB-Bp6iFr9os3Uu/edit#slide=id.p12)
+Link to progress report [here](https://docs.google.com/presentation/d/1H8_7V6NpIQwINXYNRxB-Bp6iFr9os3Uu/edit#slide=id.p12)           
+Link to final report [here](https://www.overleaf.com/4594975181qjnwjhdncbvg)
 
-# Task 1
+## Task 1
+We split our notebooks into five sub notebooks for this task.
+- The exploratory data analysis notebook is ``task1/EDA.ipynb``. 
+- The preprocessing notebook is ``task1/Preprocessing.ipynb``
+- The auxiliary data engineering notebook is ``task1/Auxiliary Data Engineering.ipynb``.
+- The model training notebook is ``task1/Training.ipynb``
 
-## 1. Exploratory Data Analysis
-Below are the insights gained from exploratory data analysis
-#### Target Variable
-#### Size Square Feet
-#### Built Year
-#### Tenure
-#### Number of bedrooms
-#### Number of bathrooms
-#### Property type
-#### Latitude and Longitude
-#### Planning Area
-#### Furnishings
-#### Total number of units
+## Task 2
+- The main notebook for this task is ``task2/task2.ipynb``
 
-## 2. Dealing with missing values
-
-## 3. Preprocessing
-### Transformation
-- **Tenure:** Binned into "99-year leasehold", "freehold" and "others".
-- 
-
-### New features created
-- Mean price of different tenure category
-- Number of active years since building has been built
-- Remaining lease
-- Number of total rooms (bedroom + bathroom)
-- Size per room (size_sqft/total_rooms)
-- Mean price of different property type
-- Distance from nearest MRT
-- Number of shopping malls in planning area
-
-### Encoding
-- **Planning area**: Target encoding
-- **Tenure**: One hot encoding after binning
-- **Property type**: One hot encoding
-- **Furnishing**: One hot encoding
+## Task 3
+- The main notebook for this task is ``task3/task3.ipynb``   
+- The web scraping script for our hospital data is in ``task3/scrape.py``
