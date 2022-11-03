@@ -12,7 +12,8 @@ We split our notebooks into five sub notebooks for this task.
 - The model training notebook is ``task1/Training.ipynb``
 
 ## Task 2
-- The main notebook for this task is ``task2/task2.ipynb``
+- The main notebook for this task is ``task2/task2_kmeans_cosine_recommendation.ipynb``
+- The alternative notebooks are ``task2/task2_arm.ipynb`` and ``task2/task2_knearest.ipynb``
 
 ## Task 3
 - The main notebook for this task is ``task3/task3.ipynb``   
